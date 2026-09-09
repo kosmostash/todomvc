@@ -1,0 +1,9 @@
+# Ignore all files
+*
+
+# But don't ignore directories (so Git can traverse them)
+!*/
+
+# And don't ignore these files at any depth
+!cache.json
+!types.ts

@@ -1,0 +1,348 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "TodoMVC API",
+    "version": "1.0.0",
+    "summary": "The TodoMVC backend - todos persisted in SQLite",
+    "license": {
+      "name": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4556/api",
+      "description": "Development server"
+    }
+  ],
+  "paths": {
+    "/todos/{id}": {
+      "patch": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/todos_id_index_ts_50844363_ResponseTPATCH3283446079"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/todos_id_index_ts_50844363_ParamsT936095216_id3208210256"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/todos_id_index_ts_50844363_JsonTPATCH2707495499"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/todos_id_index_ts_50844363_ResponseTDELETE3283446079"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/todos_id_index_ts_50844363_ParamsT936095216_id3208210256"
+          }
+        ]
+      }
+    },
+    "/todos": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/todos_index_ts_1797802534_ResponseTGET1868331565"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/todos_index_ts_1797802534_ResponseTPOST4226798136"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/todos_index_ts_1797802534_JsonTPOST2418144118"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/todos_index_ts_1797802534_ResponseTPATCH1868331565"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/todos_index_ts_1797802534_JsonTPATCH2418144118"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/todos_index_ts_1797802534_ResponseTDELETE1868331565"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "completed",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/todos_index_ts_1797802534_QueryTDELETE2418144118_completed989355118"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "todos_id_index_ts_50844363_ParamsT936095216_id3208210256": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "number",
+          "minimum": 1,
+          "multipleOf": 1
+        }
+      }
+    },
+    "schemas": {
+      "todos_id_index_ts_50844363_JsonTPATCH2707495499": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          },
+          "completed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "todos_id_index_ts_50844363_ResponseTPATCH3283446079": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "completed"
+        ],
+        "properties": {
+          "id": {
+            "type": "number",
+            "minimum": 1,
+            "multipleOf": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "todos_id_index_ts_50844363_ResponseTDELETE3283446079": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "completed"
+        ],
+        "properties": {
+          "id": {
+            "type": "number",
+            "minimum": 1,
+            "multipleOf": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "todos_index_ts_1797802534_ResponseTGET1868331565": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "title",
+            "completed"
+          ],
+          "properties": {
+            "id": {
+              "type": "number",
+              "minimum": 1,
+              "multipleOf": 1
+            },
+            "title": {
+              "type": "string"
+            },
+            "completed": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "todos_index_ts_1797802534_JsonTPOST2418144118": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        }
+      },
+      "todos_index_ts_1797802534_ResponseTPOST4226798136": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "completed"
+        ],
+        "properties": {
+          "id": {
+            "type": "number",
+            "minimum": 1,
+            "multipleOf": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "completed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "todos_index_ts_1797802534_JsonTPATCH2418144118": {
+        "type": "object",
+        "required": [
+          "completed"
+        ],
+        "properties": {
+          "completed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "todos_index_ts_1797802534_ResponseTPATCH1868331565": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "title",
+            "completed"
+          ],
+          "properties": {
+            "id": {
+              "type": "number",
+              "minimum": 1,
+              "multipleOf": 1
+            },
+            "title": {
+              "type": "string"
+            },
+            "completed": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "todos_index_ts_1797802534_QueryTDELETE2418144118_completed989355118": {
+        "type": "boolean"
+      },
+      "todos_index_ts_1797802534_ResponseTDELETE1868331565": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "title",
+            "completed"
+          ],
+          "properties": {
+            "id": {
+              "type": "number",
+              "minimum": 1,
+              "multipleOf": 1
+            },
+            "title": {
+              "type": "string"
+            },
+            "completed": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "hash": 4201355794,
+  "params": {
+    "id": "ParamsT936095216",
+    "schema": [
+      {
+        "type": "param",
+        "kind": "required",
+        "name": "id",
+        "const": "id"
+      }
+    ],
+    "resolvedType": {
+      "kind": "TypeLiteral",
+      "name": "ParamsT936095216",
+      "parameters": [],
+      "comments": [],
+      "text": "{\n  \"id\": VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>\n}",
+      "properties": [
+        {
+          "name": "id",
+          "nameDeclaration": "\"id\"",
+          "text": "VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>",
+          "optional": false,
+          "readonly": false,
+          "typeboxSchema": "(number with {\n    minimum: 1;\n    multipleOf: 1\n  })"
+        }
+      ],
+      "numericProperties": [
+        "id"
+      ],
+      "booleanProperties": [],
+      "typeboxSchema": "{ \"id\": (number with {\n    minimum: 1;\n    multipleOf: 1\n  }) }"
+    }
+  },
+  "methods": [
+    "PATCH",
+    "DELETE"
+  ],
+  "typeDeclarations": [
+    {
+      "importDeclaration": {
+        "name": "TodoPatch",
+        "path": "@/db/todos"
+      },
+      "text": "import type { TodoPatch } from \"@/db/todos\";"
+    },
+    {
+      "importDeclaration": {
+        "name": "TodoIdT",
+        "path": "~/api/todos/types"
+      },
+      "text": "import type { TodoIdT } from \"~/api/todos/types\";"
+    },
+    {
+      "importDeclaration": {
+        "name": "TodoPatchT",
+        "path": "~/api/todos/types"
+      },
+      "text": "import type { TodoPatchT } from \"~/api/todos/types\";"
+    },
+    {
+      "importDeclaration": {
+        "name": "TodoT",
+        "path": "~/api/todos/types"
+      },
+      "text": "import type { TodoT } from \"~/api/todos/types\";"
+    }
+  ],
+  "validationDefinitions": [
+    {
+      "method": "PATCH",
+      "target": "json",
+      "schema": {
+        "id": "JsonTPATCH2707495499",
+        "text": "TodoPatchT",
+        "resolvedType": {
+          "kind": "TypeReference",
+          "name": "JsonTPATCH2707495499",
+          "parameters": [],
+          "comments": [],
+          "text": "{\n  title?: VRefine<string, {\n    minLength: 1;\n    maxLength: 255\n  }>;\n  completed?: boolean\n}",
+          "properties": [
+            {
+              "name": "title",
+              "nameDeclaration": "title",
+              "text": "VRefine<string, {\n    minLength: 1;\n    maxLength: 255\n  }>",
+              "optional": true,
+              "readonly": false,
+              "typeboxSchema": "(string with {\n    minLength: 1;\n    maxLength: 255\n  })"
+            },
+            {
+              "name": "completed",
+              "nameDeclaration": "completed",
+              "text": "boolean",
+              "optional": true,
+              "readonly": false,
+              "typeboxSchema": "boolean"
+            }
+          ],
+          "numericProperties": [],
+          "booleanProperties": [
+            "completed"
+          ],
+          "typeboxSchema": "{ title?: (string with {\n    minLength: 1;\n    maxLength: 255\n  }), completed?: boolean }"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTPATCH3283446079",
+          "status": 200,
+          "contentType": "json",
+          "body": "TodoT",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTPATCH3283446079",
+            "parameters": [],
+            "comments": [],
+            "text": "{\n  id: VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>;\n  title: string;\n  completed: boolean\n}",
+            "properties": [
+              {
+                "name": "id",
+                "nameDeclaration": "id",
+                "text": "VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "(number with {\n    minimum: 1;\n    multipleOf: 1\n  })"
+              },
+              {
+                "name": "title",
+                "nameDeclaration": "title",
+                "text": "string",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "string"
+              },
+              {
+                "name": "completed",
+                "nameDeclaration": "completed",
+                "text": "boolean",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "boolean"
+              }
+            ],
+            "numericProperties": [
+              "id"
+            ],
+            "booleanProperties": [
+              "completed"
+            ],
+            "typeboxSchema": "{ id: (number with {\n    minimum: 1;\n    multipleOf: 1\n  }), title: string, completed: boolean }"
+          }
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTDELETE3283446079",
+          "status": 200,
+          "contentType": "json",
+          "body": "TodoT",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTDELETE3283446079",
+            "parameters": [],
+            "comments": [],
+            "text": "{\n  id: VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>;\n  title: string;\n  completed: boolean\n}",
+            "properties": [
+              {
+                "name": "id",
+                "nameDeclaration": "id",
+                "text": "VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "(number with {\n    minimum: 1;\n    multipleOf: 1\n  })"
+              },
+              {
+                "name": "title",
+                "nameDeclaration": "title",
+                "text": "string",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "string"
+              },
+              {
+                "name": "completed",
+                "nameDeclaration": "completed",
+                "text": "boolean",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "boolean"
+              }
+            ],
+            "numericProperties": [
+              "id"
+            ],
+            "booleanProperties": [
+              "completed"
+            ],
+            "typeboxSchema": "{ id: (number with {\n    minimum: 1;\n    multipleOf: 1\n  }), title: string, completed: boolean }"
+          }
+        }
+      ]
+    }
+  ],
+  "referencedFiles": {
+    "db/todos.ts": 1017164225,
+    "src/app/api/todos/types.ts": 2315530106
+  }
+}

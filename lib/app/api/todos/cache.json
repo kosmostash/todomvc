@@ -1,0 +1,261 @@
+{
+  "hash": 653771516,
+  "params": {
+    "id": "ParamsT3447874133",
+    "schema": [],
+    "resolvedType": {
+      "kind": "TypeLiteral",
+      "name": "ParamsT3447874133",
+      "parameters": [],
+      "comments": [],
+      "text": "{}",
+      "properties": [],
+      "numericProperties": [],
+      "booleanProperties": [],
+      "typeboxSchema": "{  }"
+    }
+  },
+  "methods": [
+    "GET",
+    "POST",
+    "PATCH",
+    "DELETE"
+  ],
+  "typeDeclarations": [
+    {
+      "importDeclaration": {
+        "name": "NewTodoT",
+        "path": "~/api/todos/types"
+      },
+      "text": "import type { NewTodoT } from \"~/api/todos/types\";"
+    },
+    {
+      "importDeclaration": {
+        "name": "TodoT",
+        "path": "~/api/todos/types"
+      },
+      "text": "import type { TodoT } from \"~/api/todos/types\";"
+    },
+    {
+      "importDeclaration": {
+        "name": "ToggleAllT",
+        "path": "~/api/todos/types"
+      },
+      "text": "import type { ToggleAllT } from \"~/api/todos/types\";"
+    }
+  ],
+  "validationDefinitions": [
+    {
+      "method": "GET",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTGET1868331565",
+          "status": 200,
+          "contentType": "json",
+          "body": "Array<TodoT>",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTGET1868331565",
+            "parameters": [],
+            "comments": [],
+            "text": "Array<{\n  id: VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>;\n  title: string;\n  completed: boolean\n}>",
+            "properties": [],
+            "numericProperties": [],
+            "booleanProperties": [],
+            "typeboxSchema": "Array<{ id: (number with {\n    minimum: 1;\n    multipleOf: 1\n  }), title: string, completed: boolean }>"
+          }
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "target": "json",
+      "schema": {
+        "id": "JsonTPOST2418144118",
+        "text": "NewTodoT",
+        "resolvedType": {
+          "kind": "TypeReference",
+          "name": "JsonTPOST2418144118",
+          "parameters": [],
+          "comments": [],
+          "text": "{\n  title: VRefine<string, {\n    minLength: 1;\n    maxLength: 255\n  }>\n}",
+          "properties": [
+            {
+              "name": "title",
+              "nameDeclaration": "title",
+              "text": "VRefine<string, {\n    minLength: 1;\n    maxLength: 255\n  }>",
+              "optional": false,
+              "readonly": false,
+              "typeboxSchema": "(string with {\n    minLength: 1;\n    maxLength: 255\n  })"
+            }
+          ],
+          "numericProperties": [],
+          "booleanProperties": [],
+          "typeboxSchema": "{ title: (string with {\n    minLength: 1;\n    maxLength: 255\n  }) }"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTPOST4226798136",
+          "status": 201,
+          "contentType": "json",
+          "body": "TodoT",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTPOST4226798136",
+            "parameters": [],
+            "comments": [],
+            "text": "{\n  id: VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>;\n  title: string;\n  completed: boolean\n}",
+            "properties": [
+              {
+                "name": "id",
+                "nameDeclaration": "id",
+                "text": "VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "(number with {\n    minimum: 1;\n    multipleOf: 1\n  })"
+              },
+              {
+                "name": "title",
+                "nameDeclaration": "title",
+                "text": "string",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "string"
+              },
+              {
+                "name": "completed",
+                "nameDeclaration": "completed",
+                "text": "boolean",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "boolean"
+              }
+            ],
+            "numericProperties": [
+              "id"
+            ],
+            "booleanProperties": [
+              "completed"
+            ],
+            "typeboxSchema": "{ id: (number with {\n    minimum: 1;\n    multipleOf: 1\n  }), title: string, completed: boolean }"
+          }
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "target": "json",
+      "schema": {
+        "id": "JsonTPATCH2418144118",
+        "text": "ToggleAllT",
+        "resolvedType": {
+          "kind": "TypeReference",
+          "name": "JsonTPATCH2418144118",
+          "parameters": [],
+          "comments": [],
+          "text": "{\n  completed: boolean\n}",
+          "properties": [
+            {
+              "name": "completed",
+              "nameDeclaration": "completed",
+              "text": "boolean",
+              "optional": false,
+              "readonly": false,
+              "typeboxSchema": "boolean"
+            }
+          ],
+          "numericProperties": [],
+          "booleanProperties": [
+            "completed"
+          ],
+          "typeboxSchema": "{ completed: boolean }"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTPATCH1868331565",
+          "status": 200,
+          "contentType": "json",
+          "body": "Array<TodoT>",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTPATCH1868331565",
+            "parameters": [],
+            "comments": [],
+            "text": "Array<{\n  id: VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>;\n  title: string;\n  completed: boolean\n}>",
+            "properties": [],
+            "numericProperties": [],
+            "booleanProperties": [],
+            "typeboxSchema": "Array<{ id: (number with {\n    minimum: 1;\n    multipleOf: 1\n  }), title: string, completed: boolean }>"
+          }
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "target": "query",
+      "schema": {
+        "id": "QueryTDELETE2418144118",
+        "text": "{ completed: boolean }",
+        "resolvedType": {
+          "kind": "TypeLiteral",
+          "name": "QueryTDELETE2418144118",
+          "parameters": [],
+          "comments": [],
+          "text": "{\n  completed: boolean\n}",
+          "properties": [
+            {
+              "name": "completed",
+              "nameDeclaration": "completed",
+              "text": "boolean",
+              "optional": false,
+              "readonly": false,
+              "typeboxSchema": "boolean"
+            }
+          ],
+          "numericProperties": [],
+          "booleanProperties": [
+            "completed"
+          ],
+          "typeboxSchema": "{ completed: boolean }"
+        }
+      }
+    },
+    {
+      "method": "DELETE",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTDELETE1868331565",
+          "status": 200,
+          "contentType": "json",
+          "body": "Array<TodoT>",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTDELETE1868331565",
+            "parameters": [],
+            "comments": [],
+            "text": "Array<{\n  id: VRefine<number, {\n    minimum: 1;\n    multipleOf: 1\n  }>;\n  title: string;\n  completed: boolean\n}>",
+            "properties": [],
+            "numericProperties": [],
+            "booleanProperties": [],
+            "typeboxSchema": "Array<{ id: (number with {\n    minimum: 1;\n    multipleOf: 1\n  }), title: string, completed: boolean }>"
+          }
+        }
+      ]
+    }
+  ],
+  "referencedFiles": {
+    "src/app/api/todos/types.ts": 2315530106
+  }
+}

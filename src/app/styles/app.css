@@ -1,0 +1,30 @@
+/*
+ * todomvc-app-css covers the whole application chrome.
+ * The only thing it has no opinion about is what to do when the API says no.
+ */
+
+.todo-error {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin: 0;
+	padding: 12px 16px;
+	border-top: 1px solid #ededed;
+	background: #fdf3f2;
+	color: #af5b5e;
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+.todo-error button {
+	padding: 2px 6px;
+	color: #af5b5e;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.todoapp[aria-busy="true"] .todo-list {
+	opacity: 0.7;
+	transition: opacity 0.1s ease-in 0.2s;
+}
