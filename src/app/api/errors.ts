@@ -24,11 +24,13 @@ export default errorHandlerFactory(async (error, ctx) => {
     console.error(`[${ctx.get("requestId")}] ${ctx.req.method} ${ctx.req.path}`, error);
   }
 
-  // Respond based on what the client accepts
+  // An API answers JSON unless the client explicitly asks for text.
+  // `*/*` - what a fetch client sends - resolves to the default, so the default
+  // is what our own clients get: they parse every response as JSON.
   const type = accepts(ctx, {
     header: "Accept",
     supports: ["application/json", "text/plain"],
-    default: "text/plain",
+    default: "application/json",
   });
 
   return type === "application/json"

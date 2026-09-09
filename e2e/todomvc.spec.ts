@@ -153,21 +153,23 @@ test("keeps todos across a reload", async ({ page }) => {
   await expect(items(page).first()).toHaveClass(/completed/);
 });
 
-test("surfaces an API error instead of failing silently", async ({ page }) => {
+test("surfaces an API error instead of failing silently", async ({ page, request }) => {
   await addTodos(page, "Taste JavaScript");
 
-  // the todo is gone by the time the click lands
-  await page.route("**/api/todos/*", (route) =>
-    route.fulfill({
-      status: 404,
-      contentType: "application/json",
-      body: JSON.stringify({ error: "No todo with id 1" }),
-    }),
-  );
+  // the todo is gone by the time the click lands - removed behind the UI's back,
+  // so the failure comes from the real API rather than a stubbed response
+  const [todo]: Array<{ id: number }> = await (
+    await request.get("/api/todos")
+  ).json();
+
+  await request.delete(`/api/todos/${todo.id}`);
 
   await items(page).first().locator(".toggle").check();
 
-  await expect(page.getByRole("alert")).toContainText("No todo with id 1");
+  await expect(page.getByRole("alert")).toContainText(
+    `No todo with id ${todo.id}`,
+  );
+  await expect(items(page).first()).not.toHaveClass(/completed/);
 });
 
 test("shows a 404 page for an unknown URL", async ({ page, request }) => {
