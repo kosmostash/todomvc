@@ -1,0 +1,217 @@
+{
+  "hash": 3208683883,
+  "params": {
+    "id": "ParamsT3447874133",
+    "schema": [],
+    "resolvedType": {
+      "kind": "TypeLiteral",
+      "name": "ParamsT3447874133",
+      "parameters": [],
+      "comments": [],
+      "text": "{}",
+      "properties": [],
+      "numericProperties": [],
+      "booleanProperties": [],
+      "typeboxSchema": "{  }"
+    }
+  },
+  "methods": [
+    "GET",
+    "POST",
+    "PATCH",
+    "DELETE"
+  ],
+  "typeDeclarations": [
+    {
+      "importDeclaration": {
+        "name": "Todo",
+        "path": "~/types/todo"
+      },
+      "text": "import type { Todo } from \"~/types/todo\";"
+    }
+  ],
+  "validationDefinitions": [
+    {
+      "method": "GET",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTGET2162869163",
+          "status": 200,
+          "contentType": "json",
+          "body": "Array<Todo>",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTGET2162869163",
+            "parameters": [],
+            "comments": [],
+            "text": "Array<{\n  id: number;\n  title: string;\n  completed: boolean\n}>",
+            "properties": [],
+            "numericProperties": [],
+            "booleanProperties": [],
+            "typeboxSchema": "Array<{ id: number, title: string, completed: boolean }>"
+          }
+        }
+      ]
+    },
+    {
+      "method": "POST",
+      "target": "json",
+      "schema": {
+        "id": "JsonTPOST2418144118",
+        "text": "{ title: VRefine<string, { pattern: \"\\\\S\" }> }",
+        "resolvedType": {
+          "kind": "TypeLiteral",
+          "name": "JsonTPOST2418144118",
+          "parameters": [],
+          "comments": [],
+          "text": "{\n  title: VRefine<string, {\n    pattern: \"\\\\S\"\n  }>\n}",
+          "properties": [
+            {
+              "name": "title",
+              "nameDeclaration": "title",
+              "text": "VRefine<string, {\n    pattern: \"\\\\S\"\n  }>",
+              "optional": false,
+              "readonly": false,
+              "typeboxSchema": "(string with {\n    pattern: \"\\\\S\"\n  })"
+            }
+          ],
+          "numericProperties": [],
+          "booleanProperties": [],
+          "typeboxSchema": "{ title: (string with {\n    pattern: \"\\\\S\"\n  }) }"
+        }
+      }
+    },
+    {
+      "method": "POST",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTPOST2368446457",
+          "status": 201,
+          "contentType": "json",
+          "body": "Todo",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTPOST2368446457",
+            "parameters": [],
+            "comments": [],
+            "text": "{\n  id: number;\n  title: string;\n  completed: boolean\n}",
+            "properties": [
+              {
+                "name": "id",
+                "nameDeclaration": "id",
+                "text": "number",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "number"
+              },
+              {
+                "name": "title",
+                "nameDeclaration": "title",
+                "text": "string",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "string"
+              },
+              {
+                "name": "completed",
+                "nameDeclaration": "completed",
+                "text": "boolean",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "boolean"
+              }
+            ],
+            "numericProperties": [
+              "id"
+            ],
+            "booleanProperties": [
+              "completed"
+            ],
+            "typeboxSchema": "{ id: number, title: string, completed: boolean }"
+          }
+        }
+      ]
+    },
+    {
+      "method": "PATCH",
+      "target": "json",
+      "schema": {
+        "id": "JsonTPATCH2418144118",
+        "text": "{ completed: boolean }",
+        "resolvedType": {
+          "kind": "TypeLiteral",
+          "name": "JsonTPATCH2418144118",
+          "parameters": [],
+          "comments": [],
+          "text": "{\n  completed: boolean\n}",
+          "properties": [
+            {
+              "name": "completed",
+              "nameDeclaration": "completed",
+              "text": "boolean",
+              "optional": false,
+              "readonly": false,
+              "typeboxSchema": "boolean"
+            }
+          ],
+          "numericProperties": [],
+          "booleanProperties": [
+            "completed"
+          ],
+          "typeboxSchema": "{ completed: boolean }"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTPATCH2162869163",
+          "status": 200,
+          "contentType": "json",
+          "body": "Array<Todo>",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTPATCH2162869163",
+            "parameters": [],
+            "comments": [],
+            "text": "Array<{\n  id: number;\n  title: string;\n  completed: boolean\n}>",
+            "properties": [],
+            "numericProperties": [],
+            "booleanProperties": [],
+            "typeboxSchema": "Array<{ id: number, title: string, completed: boolean }>"
+          }
+        }
+      ]
+    },
+    {
+      "method": "DELETE",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTDELETE2162869163",
+          "status": 200,
+          "contentType": "json",
+          "body": "Array<Todo>",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTDELETE2162869163",
+            "parameters": [],
+            "comments": [],
+            "text": "Array<{\n  id: number;\n  title: string;\n  completed: boolean\n}>",
+            "properties": [],
+            "numericProperties": [],
+            "booleanProperties": [],
+            "typeboxSchema": "Array<{ id: number, title: string, completed: boolean }>"
+          }
+        }
+      ]
+    }
+  ],
+  "referencedFiles": {
+    "src/app/types/todo.ts": 2927603766
+  }
+}

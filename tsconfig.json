@@ -1,0 +1,6 @@
+{
+  "extends": "./var/lib/tsconfig.json",
+  "include": [
+    "./var/lib/*.d.ts"
+  ]
+}

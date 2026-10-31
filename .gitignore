@@ -1,0 +1,8 @@
+# build output dir; if you edit distDir in package.json, make sure to update here too
+/dist/
+
+/var/*
+!/var/lib/
+
+# node_modules dir at any level
+node_modules/

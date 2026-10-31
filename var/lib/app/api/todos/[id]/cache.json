@@ -1,0 +1,144 @@
+{
+  "hash": 2543467407,
+  "params": {
+    "id": "ParamsT936095216",
+    "schema": [
+      {
+        "type": "param",
+        "kind": "required",
+        "name": "id",
+        "const": "id"
+      }
+    ],
+    "resolvedType": {
+      "kind": "TypeLiteral",
+      "name": "ParamsT936095216",
+      "parameters": [],
+      "comments": [],
+      "text": "{\n  \"id\": VRefine<number, {\n    minimum: 1\n  }>\n}",
+      "properties": [
+        {
+          "name": "id",
+          "nameDeclaration": "\"id\"",
+          "text": "VRefine<number, {\n    minimum: 1\n  }>",
+          "optional": false,
+          "readonly": false,
+          "typeboxSchema": "(number with {\n    minimum: 1\n  })"
+        }
+      ],
+      "numericProperties": [
+        "id"
+      ],
+      "booleanProperties": [],
+      "typeboxSchema": "{ \"id\": (number with {\n    minimum: 1\n  }) }"
+    }
+  },
+  "methods": [
+    "PATCH",
+    "DELETE"
+  ],
+  "typeDeclarations": [
+    {
+      "importDeclaration": {
+        "name": "Todo",
+        "path": "~/types/todo"
+      },
+      "text": "import type { Todo } from \"~/types/todo\";"
+    }
+  ],
+  "validationDefinitions": [
+    {
+      "method": "PATCH",
+      "target": "json",
+      "schema": {
+        "id": "JsonTPATCH2707495499",
+        "text": "{\n      title?: VRefine<string, { pattern: \"\\\\S\" }>;\n      completed?: boolean;\n    }",
+        "resolvedType": {
+          "kind": "TypeLiteral",
+          "name": "JsonTPATCH2707495499",
+          "parameters": [],
+          "comments": [],
+          "text": "{\n  title?: VRefine<string, {\n    pattern: \"\\\\S\"\n  }>;\n  completed?: boolean\n}",
+          "properties": [
+            {
+              "name": "title",
+              "nameDeclaration": "title",
+              "text": "VRefine<string, {\n    pattern: \"\\\\S\"\n  }>",
+              "optional": true,
+              "readonly": false,
+              "typeboxSchema": "(string with {\n    pattern: \"\\\\S\"\n  })"
+            },
+            {
+              "name": "completed",
+              "nameDeclaration": "completed",
+              "text": "boolean",
+              "optional": true,
+              "readonly": false,
+              "typeboxSchema": "boolean"
+            }
+          ],
+          "numericProperties": [],
+          "booleanProperties": [
+            "completed"
+          ],
+          "typeboxSchema": "{ title?: (string with {\n    pattern: \"\\\\S\"\n  }), completed?: boolean }"
+        }
+      }
+    },
+    {
+      "method": "PATCH",
+      "target": "response",
+      "variants": [
+        {
+          "id": "ResponseTPATCH257055835",
+          "status": 200,
+          "contentType": "json",
+          "body": "Todo",
+          "resolvedType": {
+            "kind": "TypeReference",
+            "name": "ResponseTPATCH257055835",
+            "parameters": [],
+            "comments": [],
+            "text": "{\n  id: number;\n  title: string;\n  completed: boolean\n}",
+            "properties": [
+              {
+                "name": "id",
+                "nameDeclaration": "id",
+                "text": "number",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "number"
+              },
+              {
+                "name": "title",
+                "nameDeclaration": "title",
+                "text": "string",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "string"
+              },
+              {
+                "name": "completed",
+                "nameDeclaration": "completed",
+                "text": "boolean",
+                "optional": false,
+                "readonly": false,
+                "typeboxSchema": "boolean"
+              }
+            ],
+            "numericProperties": [
+              "id"
+            ],
+            "booleanProperties": [
+              "completed"
+            ],
+            "typeboxSchema": "{ id: number, title: string, completed: boolean }"
+          }
+        }
+      ]
+    }
+  ],
+  "referencedFiles": {
+    "src/app/types/todo.ts": 2927603766
+  }
+}

@@ -1,0 +1,34 @@
+# TodoMVC · KosmoJS (React + Hono)
+
+[TodoMVC](https://github.com/tastejs/todomvc/blob/master/app-spec.md) built with
+[KosmoJS](https://kosmojs.dev). It follows the spec, except that todos are stored
+on the server in SQLite (`node:sqlite`) instead of `localStorage`.
+
+## Stack
+
+- frontend: React (`src/app/pages`, `src/app/components`)
+- backend: Hono (`src/app/api`)
+- storage: SQLite, file location from `TODOS_DB` (default `var/todos.sqlite`)
+
+## API
+
+| Method   | Path              | Body                                    | Purpose                    |
+| -------- | ----------------- | --------------------------------------- | -------------------------- |
+| `GET`    | `/api/todos`      |                                         | list todos                 |
+| `POST`   | `/api/todos`      | `{ title }`                             | create a todo              |
+| `PATCH`  | `/api/todos`      | `{ completed }`                         | mark all complete / active |
+| `DELETE` | `/api/todos`      |                                         | clear completed            |
+| `PATCH`  | `/api/todos/:id`  | `{ title?, completed? }`                | update a todo              |
+| `DELETE` | `/api/todos/:id`  |                                         | destroy a todo             |
+
+## Usage
+
+```sh
+pnpm install
+pnpm dev        # http://127.0.0.1:4556
+pnpm test       # KosmoJS test harness: API routes + browser tests of the TodoMVC spec
+pnpm build && pnpm preview
+```
+
+Browser tests drive Chromium via `playwright` against the dev server the harness
+starts on a random port; they use a separate database (`var/test.sqlite`).
