@@ -2,7 +2,7 @@ import { defineConfig } from "@kosmojs/dev";
 
 export default defineConfig({
   frontend: {
-    stack: "react",
+    stack: "solid",
     base: "/",
     ssr: true,
     ssg: false,

@@ -1,28 +1,25 @@
-import {
-  type LinkProps as RouterLinkProps,
-  Link as RouterLink,
-} from "react-router";
-import type { ReactNode } from "react";
+import { A, type AnchorProps } from "@solidjs/router";
+import { type JSXElement, splitProps } from "solid-js";
 
 import { pageRouteMap, type LinkProps } from "_/core";
 
 export default function Link(
-  props: Omit<RouterLinkProps, "to"> & {
+  props: Omit<AnchorProps, "href"> & {
     to: LinkProps;
     query?: Record<string | number, unknown>;
-    children: ReactNode;
+    children: JSXElement;
   },
 ) {
-  const { to, query, children, ...restProps } = props;
+  const [knownProps, restProps] = splitProps(props, [
+    "to",
+    "query",
+    "children",
+  ]);
 
   const href = () => {
-    const [key, ...params] = to;
-    return pageRouteMap[key]?.path(params as never, query, { prefix: false });
+    const [key, ...params] = knownProps.to;
+    return pageRouteMap[key]?.path(params as never, knownProps.query, { prefix: false });
   };
 
-  return (
-    <RouterLink {...restProps} to={href()}>
-      {children}
-    </RouterLink>
-  );
+  return <A {...{ ...restProps, href: href() }}>{knownProps.children}</A>;
 }

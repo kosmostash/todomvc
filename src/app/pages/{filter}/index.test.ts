@@ -23,9 +23,12 @@ const storedTodos = async (): Promise<Array<Todo>> => (await api("todos")).json(
 
 // retrying assertion helpers, playwright locators are lazy
 const texts = (locator: Locator) => expect.poll(() => locator.allTextContents());
+// class lists compare by tokens; frameworks differ in whitespace (e.g. " selected")
+const normalizeClass = (value: string | undefined) =>
+  (value ?? "").split(/\s+/).filter(Boolean).join(" ");
 const classes = (locator: Locator) =>
   expect.poll(async () =>
-    (await locator.evaluateAll((els) => els.map((el) => el.className))),
+    (await locator.evaluateAll((els) => els.map((el) => el.className))).map(normalizeClass),
   );
 const count = (locator: Locator) => expect.poll(() => locator.count());
 const visible = (locator: Locator) => expect.poll(() => locator.isVisible());
@@ -67,7 +70,7 @@ describe(`${route}: server-rendered HTML`, () => {
       .toArray()
       .map((li) => ({
         title: $(li).find("label").text(),
-        className: $(li).attr("class") ?? "",
+        className: normalizeClass($(li).attr("class")),
         checked: $(li).find(".toggle").is("[checked]"),
       }));
 

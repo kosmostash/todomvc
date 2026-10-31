@@ -1,78 +1,72 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { createEffect, createSignal, Show } from "solid-js";
 
 import type { Todo } from "~/types/todo";
 
-export default function TodoItem({
-  todo,
-  onToggle,
-  onSave,
-  onDestroy,
-}: {
+export default function TodoItem(props: {
   todo: Todo;
   onToggle: (todo: Todo) => void;
   onSave: (todo: Todo, title: string) => void;
   onDestroy: (todo: Todo) => void;
 }) {
-  const [editing, setEditing] = useState(false);
-  const [editText, setEditText] = useState(todo.title);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [editing, setEditing] = createSignal(false);
+  const [editText, setEditText] = createSignal("");
+  let input: HTMLInputElement | undefined;
 
-  useEffect(() => {
-    if (editing) inputRef.current?.focus();
-  }, [editing]);
+  createEffect(() => {
+    if (editing()) input?.focus();
+  });
 
   const startEditing = () => {
-    setEditText(todo.title);
+    setEditText(props.todo.title);
     setEditing(true);
   };
 
   const submit = () => {
-    if (!editing) return;
+    if (!editing()) return;
     setEditing(false);
-    const title = editText.trim();
-    if (title) {
-      if (title !== todo.title) onSave(todo, title);
-      setEditText(title);
-    } else {
-      onDestroy(todo);
+    const title = editText().trim();
+    if (!title) {
+      props.onDestroy(props.todo);
+    } else if (title !== props.todo.title) {
+      props.onSave(props.todo, title);
     }
   };
 
-  const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+  const onKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Enter") {
       submit();
     } else if (event.key === "Escape") {
-      setEditText(todo.title);
       setEditing(false);
     }
   };
 
-  const className = [todo.completed && "completed", editing && "editing"]
-    .filter(Boolean)
-    .join(" ");
-
   return (
-    <li className={className} data-testid="todo-item">
-      <div className="view">
+    <li
+      class={[props.todo.completed && "completed", editing() && "editing"]
+        .filter(Boolean)
+        .join(" ")}
+      data-testid="todo-item"
+    >
+      <div class="view">
         <input
-          className="toggle"
+          class="toggle"
           type="checkbox"
-          checked={todo.completed}
-          onChange={() => onToggle(todo)}
+          checked={props.todo.completed}
+          onChange={() => props.onToggle(props.todo)}
         />
-        <label onDoubleClick={startEditing}>{todo.title}</label>
-        <button className="destroy" onClick={() => onDestroy(todo)} />
+        <label onDblClick={startEditing}>{props.todo.title}</label>
+        <button class="destroy" onClick={() => props.onDestroy(props.todo)} />
       </div>
-      {editing && (
+      <Show when={editing()}>
         <input
-          ref={inputRef}
-          className="edit"
-          value={editText}
-          onChange={(event) => setEditText(event.target.value)}
+          ref={input}
+          class="edit"
+          value={editText()}
+          onInput={(event) => setEditText(event.currentTarget.value)}
           onBlur={submit}
           onKeyDown={onKeyDown}
         />
-      )}
+      </Show>
     </li>
   );
 }

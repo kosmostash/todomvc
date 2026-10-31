@@ -1,5 +1,17 @@
-import { useCallback, useEffect, useState, type KeyboardEvent } from "react";
-import { useLoaderData, useParams, useRevalidator } from "react-router";
+import {
+  createMemo,
+  createSignal,
+  For,
+  type Setter,
+  Show,
+  Suspense,
+} from "solid-js";
+import {
+  createAsync,
+  query,
+  revalidate,
+  useParams,
+} from "@solidjs/router";
 
 import fetchClients from "_/fetch";
 import Link from "~/components/Link";
@@ -16,49 +28,56 @@ type Filter = (typeof FILTERS)[number];
 const isFilter = (value: unknown): value is Filter =>
   FILTERS.includes(value as Filter);
 
+// query() gives preload and createAsync one shared cache entry
+const getTodos = query(() => todosApi.GET([]), "todos");
+
 // runs on the server during SSR (in-process API call),
-// and on the client when navigating between filters
-export const loader = () => todosApi.GET([]);
+// and on the client on navigation intent
+export const preload = () => getTodos();
 
 export default function TodoApp() {
-  const { filter } = useParams();
+  const params = useParams();
 
-  // anything other than /, /active or /completed
-  if (filter !== undefined && !isFilter(filter)) {
-    return <NotFound />;
-  }
-
-  return <Todos filter={filter} />;
+  return (
+    // anything other than /, /active or /completed
+    <Show
+      when={params.filter === undefined || isFilter(params.filter)}
+      fallback={<NotFound />}
+    >
+      {/* todos are read during render; SSR waits for them here */}
+      <Suspense>
+        <Todos filter={params.filter as Filter | undefined} />
+      </Suspense>
+    </Show>
+  );
 }
 
-function Todos({ filter }: { filter: Filter | undefined }) {
-  const loaded = useLoaderData<typeof loader>();
-  const revalidator = useRevalidator();
+function Todos(props: { filter: Filter | undefined }) {
+  const loaded = createAsync(() => getTodos());
 
-  const [todos, setTodos] = useState<Array<Todo>>(loaded);
-  const [newTodo, setNewTodo] = useState("");
+  // local, optimistically updated copy of the loaded todos;
+  // replaced whenever the loader delivers fresh data
+  const state = createMemo(() => createSignal<Array<Todo>>(loaded() ?? []));
+  const todos = () => state()[0]();
+  const setTodos: Setter<Array<Todo>> = (value) => state()[1](value as never);
 
-  // fresh loader data (e.g. after navigating to another filter) replaces local state
-  useEffect(() => setTodos(loaded), [loaded]);
+  const [newTodo, setNewTodo] = createSignal("");
 
   // UI is updated optimistically; on failure, log and resync with the server
-  const reportError = useCallback(
-    (error: unknown) => {
-      console.error(error);
-      revalidator.revalidate();
-    },
-    [revalidator],
-  );
+  const reportError = (error: unknown) => {
+    console.error(error);
+    revalidate(getTodos.key);
+  };
 
   const replaceTodo = (todo: Todo) => {
     setTodos((list) => list.map((t) => (t.id === todo.id ? todo : t)));
   };
 
-  const onNewTodoKeyDown = async (event: KeyboardEvent<HTMLInputElement>) => {
+  const onNewTodoKeyDown = async (event: KeyboardEvent) => {
     if (event.key !== "Enter") return;
     // ignore Enter while an IME composition is in progress
-    if (event.nativeEvent.isComposing) return;
-    const title = newTodo.trim();
+    if (event.isComposing) return;
+    const title = newTodo().trim();
     if (!title) return;
     setNewTodo("");
     try {
@@ -97,93 +116,92 @@ function Todos({ filter }: { filter: Filter | undefined }) {
     todosApi.DELETE([]).then(setTodos, reportError);
   };
 
-  const activeCount = todos.filter((todo) => !todo.completed).length;
-  const completedCount = todos.length - activeCount;
+  const activeCount = () => todos().filter((todo) => !todo.completed).length;
+  const completedCount = () => todos().length - activeCount();
 
-  const visibleTodos = todos.filter((todo) =>
-    filter === "active"
-      ? !todo.completed
-      : filter === "completed"
-        ? todo.completed
-        : true,
-  );
-
-  const filterLinks: Array<[Filter | undefined, string]> = [
-    [undefined, "All"],
-    ["active", "Active"],
-    ["completed", "Completed"],
-  ];
+  const visibleTodos = () =>
+    todos().filter((todo) =>
+      props.filter === "active"
+        ? !todo.completed
+        : props.filter === "completed"
+          ? todo.completed
+          : true,
+    );
 
   return (
     <>
-      <section className="todoapp">
-        <header className="header">
+      <section class="todoapp">
+        <header class="header">
           <h1>todos</h1>
           <input
-            className="new-todo"
+            class="new-todo"
             placeholder="What needs to be done?"
-            autoFocus
-            value={newTodo}
-            onChange={(event) => setNewTodo(event.target.value)}
+            autofocus
+            value={newTodo()}
+            onInput={(event) => setNewTodo(event.currentTarget.value)}
             onKeyDown={onNewTodoKeyDown}
           />
         </header>
 
-        {todos.length > 0 && (
-          <section className="main">
-            <input
-              id="toggle-all"
-              className="toggle-all"
-              type="checkbox"
-              checked={activeCount === 0}
-              onChange={(event) => toggleAll(event.target.checked)}
-            />
-            <label htmlFor="toggle-all">Mark all as complete</label>
-            <ul className="todo-list">
-              {visibleTodos.map((todo) => (
-                <TodoItem
-                  key={todo.id}
-                  todo={todo}
-                  onToggle={toggle}
-                  onSave={save}
-                  onDestroy={destroy}
-                />
-              ))}
-            </ul>
-          </section>
-        )}
+        <Show when={todos().length > 0}>
+            <section class="main">
+              <input
+                id="toggle-all"
+                class="toggle-all"
+                type="checkbox"
+                checked={activeCount() === 0}
+                onChange={(event) => toggleAll(event.currentTarget.checked)}
+              />
+              <label for="toggle-all">Mark all as complete</label>
+              <ul class="todo-list">
+                <For each={visibleTodos()}>
+                  {(todo) => (
+                    <TodoItem
+                      todo={todo}
+                      onToggle={toggle}
+                      onSave={save}
+                      onDestroy={destroy}
+                    />
+                  )}
+                </For>
+              </ul>
+            </section>
 
-        {todos.length > 0 && (
-          <footer className="footer">
-            <span className="todo-count">
-              <strong>{activeCount}</strong>{" "}
-              {activeCount === 1 ? "item" : "items"} left
-            </span>
-            <ul className="filters">
-              {filterLinks.map(([name, label]) => (
-                <li key={label}>
-                  <Link
-                    to={name ? ["{filter}", name] : ["{filter}"]}
-                    className={filter === name ? "selected" : undefined}
-                  >
-                    {label}
+            <footer class="footer">
+              <span class="todo-count">
+                <strong>{activeCount()}</strong>{" "}
+                {activeCount() === 1 ? "item" : "items"} left
+              </span>
+              <ul class="filters">
+                <li>
+                  <Link to={["{filter}"]} activeClass="selected" end>
+                    All
                   </Link>
                 </li>
-              ))}
-            </ul>
-            {completedCount > 0 && (
-              <button className="clear-completed" onClick={clearCompleted}>
-                Clear completed
-              </button>
-            )}
-          </footer>
-        )}
+                <li>
+                  <Link to={["{filter}", "active"]} activeClass="selected" end>
+                    Active
+                  </Link>
+                </li>
+                <li>
+                  <Link to={["{filter}", "completed"]} activeClass="selected" end>
+                    Completed
+                  </Link>
+                </li>
+              </ul>
+              <Show when={completedCount() > 0}>
+                <button class="clear-completed" onClick={clearCompleted}>
+                  Clear completed
+                </button>
+              </Show>
+            </footer>
+        </Show>
       </section>
 
-      <footer className="info">
+      <footer class="info">
         <p>Double-click to edit a todo</p>
         <p>
-          Created with <a href="https://kosmojs.dev">KosmoJS</a> (React + Hono)
+          Created with <a href="https://kosmojs.dev">KosmoJS</a> (SolidJS + Hono)
         </p>
         <p>
           Part of <a href="http://todomvc.com">TodoMVC</a>
