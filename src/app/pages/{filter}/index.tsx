@@ -183,7 +183,7 @@ function Todos({ filter }: { filter: Filter | undefined }) {
       <footer className="info">
         <p>Double-click to edit a todo</p>
         <p>
-          Created with <a href="https://kosmojs.dev">KosmoJS</a> (React + Hono)
+          Created with <a href="https://kosmojs.dev">KosmoJS</a> (React + H3)
         </p>
         <p>
           Part of <a href="http://todomvc.com">TodoMVC</a>

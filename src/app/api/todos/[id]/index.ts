@@ -14,21 +14,21 @@ export default defineRoute<"todos/[id]", [
       completed?: boolean;
     };
     response: [200, "json", Todo];
-  }>(async (ctx) => {
-    const { title, completed } = ctx.validated.json;
-    const todo = updateTodo(ctx.validated.params.id, {
+  }>(async (event) => {
+    const { title, completed } = event.validated.json;
+    const todo = updateTodo(event.validated.params.id, {
       ...(title === undefined ? {} : { title: title.trim() }),
       ...(completed === undefined ? {} : { completed }),
     });
     if (!todo) throw new HTTPError([404, "todo not found"]);
-    return ctx.json(todo);
+    return todo;
   }),
 
   // destroy a todo
-  DELETE(async (ctx) => {
-    if (!deleteTodo(ctx.validated.params.id)) {
+  DELETE(async (event) => {
+    if (!deleteTodo(event.validated.params.id)) {
       throw new HTTPError([404, "todo not found"]);
     }
-    return ctx.body(null, 204);
+    return new Response(null, { status: 204 });
   }),
 ]);

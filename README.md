@@ -1,4 +1,4 @@
-# TodoMVC · KosmoJS (React + Hono)
+# TodoMVC · KosmoJS (React + H3)
 
 [TodoMVC](https://github.com/tastejs/todomvc/blob/master/app-spec.md) built with
 [KosmoJS](https://kosmojs.dev). It follows the spec, except that todos are stored
@@ -7,7 +7,7 @@ on the server in SQLite (`node:sqlite`) instead of `localStorage`.
 ## Stack
 
 - frontend: React (`src/app/pages`, `src/app/components`)
-- backend: Hono (`src/app/api`)
+- backend: H3 (`src/app/api`)
 - storage: SQLite, file location from `TODOS_DB` (default `var/todos.sqlite`)
 
 ## Routes

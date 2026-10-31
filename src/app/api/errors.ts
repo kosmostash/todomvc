@@ -1,17 +1,10 @@
-import { accepts } from "hono/accepts";
-import { HTTPException } from "hono/http-exception";
-
-import { ValidationError, HTTPError } from "@kosmojs/core/errors";
+import { ValidationError } from "@kosmojs/core/errors";
+import { HTTPError } from "h3";
 
 import { errorHandlerFactory } from "_/api:factory";
 
-export default errorHandlerFactory(async (error, ctx) => {
-  // Let Hono's HTTPException handle its own response
-  if (error instanceof HTTPException) {
-    return error.getResponse();
-  }
-
-  const [status, message] = Array.isArray(error)
+export default errorHandlerFactory(async (error, event) => {
+  const [status, message = "Unknown error occurred"] = Array.isArray(error)
     ? error
     : error instanceof HTTPError
       ? [error.status, error.message]
@@ -19,14 +12,15 @@ export default errorHandlerFactory(async (error, ctx) => {
         ? [400, `${error.target}: ${error.errorMessage}`]
         : [error.statusCode || 500, error.message];
 
-  // Respond based on what the client accepts
-  const type = accepts(ctx, {
-    header: "Accept",
-    supports: ["application/json", "text/plain"],
-    default: "text/plain",
-  });
+  const accept = event.req.headers.get("accept");
 
-  return type === "application/json"
-    ? ctx.json({ error: message }, status)
-    : ctx.text(message, status);
+  return accept?.includes("application/json")
+    ? new Response(JSON.stringify({ error: message }), {
+        status,
+        headers: { "Content-Type": "application/json" },
+      })
+    : new Response(message, {
+        status,
+        headers: { "Content-Type": "text/plain" },
+      });
 });
