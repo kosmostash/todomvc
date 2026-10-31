@@ -6,7 +6,7 @@ import renderFactory, {
 
 import routerFactory from "../router";
 
-const routes = createRoutes({ withPreload: true });
+const routes = createRoutes();
 const { serverRouter } = routerFactory(routes);
 
 export default renderFactory(() => {
