@@ -10,6 +10,19 @@ on the server in SQLite (`node:sqlite`) instead of `localStorage`.
 - backend: Hono (`src/app/api`)
 - storage: SQLite, file location from `TODOS_DB` (default `var/todos.sqlite`)
 
+## Routes
+
+| Path         | Shows               |
+| ------------ | ------------------- |
+| `/`          | all todos           |
+| `/active`    | active todos        |
+| `/completed` | completed todos     |
+
+The filter is an optional route param (`pages/{filter}/index.tsx`); any other value renders the 404 page.
+Todos are loaded by a React Router `loader`: in production it runs during SSR, calling the API
+in-process, so the delivered HTML already contains the filtered list and hydration reuses that data.
+Navigating between filters runs the loader in the browser.
+
 ## API
 
 | Method   | Path              | Body                                    | Purpose                    |
@@ -32,3 +45,4 @@ pnpm build && pnpm preview
 
 Browser tests drive Chromium via `playwright` against the dev server the harness
 starts on a random port; they use a separate database (`var/test.sqlite`).
+The dev server always renders client-side, so use `pnpm preview` to check the server-rendered HTML.

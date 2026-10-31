@@ -1,47 +1,54 @@
 import { useCallback, useEffect, useState, type KeyboardEvent } from "react";
-import { useLocation } from "react-router";
+import { useLoaderData, useParams, useRevalidator } from "react-router";
 
 import fetchClients from "_/fetch";
+import Link from "~/components/Link";
 import TodoItem from "~/components/TodoItem";
+import NotFound from "~/pages/404";
 import type { Todo } from "~/types/todo";
 
 const todosApi = fetchClients["todos"];
 const todoApi = fetchClients["todos/[id]"];
 
-type Filter = "all" | "active" | "completed";
+const FILTERS = ["active", "completed"] as const;
+type Filter = (typeof FILTERS)[number];
 
-const filters: Array<[Filter, string, string]> = [
-  ["all", "#/", "All"],
-  ["active", "#/active", "Active"],
-  ["completed", "#/completed", "Completed"],
-];
+const isFilter = (value: unknown): value is Filter =>
+  FILTERS.includes(value as Filter);
 
-const filterFromHash = (hash: string): Filter => {
-  const name = hash.replace(/^#!?\//, "");
-  return name === "active" || name === "completed" ? name : "all";
-};
+// runs on the server during SSR (in-process API call),
+// and on the client when navigating between filters
+export const loader = () => todosApi.GET([]);
 
 export default function TodoApp() {
-  const { hash } = useLocation();
-  const filter = filterFromHash(hash);
+  const { filter } = useParams();
 
-  const [todos, setTodos] = useState<Array<Todo>>([]);
+  // anything other than /, /active or /completed
+  if (filter !== undefined && !isFilter(filter)) {
+    return <NotFound />;
+  }
+
+  return <Todos filter={filter} />;
+}
+
+function Todos({ filter }: { filter: Filter | undefined }) {
+  const loaded = useLoaderData<typeof loader>();
+  const revalidator = useRevalidator();
+
+  const [todos, setTodos] = useState<Array<Todo>>(loaded);
   const [newTodo, setNewTodo] = useState("");
 
-  const load = useCallback(() => {
-    todosApi.GET([]).then(setTodos, console.error);
-  }, []);
+  // fresh loader data (e.g. after navigating to another filter) replaces local state
+  useEffect(() => setTodos(loaded), [loaded]);
 
   // UI is updated optimistically; on failure, log and resync with the server
   const reportError = useCallback(
     (error: unknown) => {
       console.error(error);
-      load();
+      revalidator.revalidate();
     },
-    [load],
+    [revalidator],
   );
-
-  useEffect(load, [load]);
 
   const replaceTodo = (todo: Todo) => {
     setTodos((list) => list.map((t) => (t.id === todo.id ? todo : t)));
@@ -76,7 +83,6 @@ export default function TodoApp() {
   };
 
   const save = (todo: Todo, title: string) => {
-    // update immediately so the label reflects the edit without waiting for the server
     replaceTodo({ ...todo, title });
     todoApi.PATCH([todo.id], { json: { title } }).then(replaceTodo, reportError);
   };
@@ -101,6 +107,12 @@ export default function TodoApp() {
         ? todo.completed
         : true,
   );
+
+  const filterLinks: Array<[Filter | undefined, string]> = [
+    [undefined, "All"],
+    ["active", "Active"],
+    ["completed", "Completed"],
+  ];
 
   return (
     <>
@@ -148,11 +160,14 @@ export default function TodoApp() {
               {activeCount === 1 ? "item" : "items"} left
             </span>
             <ul className="filters">
-              {filters.map(([name, href, label]) => (
-                <li key={name}>
-                  <a href={href} className={filter === name ? "selected" : undefined}>
+              {filterLinks.map(([name, label]) => (
+                <li key={label}>
+                  <Link
+                    to={name ? ["{filter}", name] : ["{filter}"]}
+                    className={filter === name ? "selected" : undefined}
+                  >
                     {label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

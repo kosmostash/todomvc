@@ -5,7 +5,7 @@ import { prepareHarness } from "_/test/pages";
 import { useBrowser } from "~/lib/browser";
 import type { Todo } from "~/types/todo";
 
-const { page: indexPage, route, base } = await prepareHarness("index");
+const { page: filterPage, route, base } = await prepareHarness("{filter}");
 
 const browser = useBrowser();
 
@@ -44,8 +44,8 @@ const createTodos = async (items = TODO_ITEMS) => {
   }
 };
 
-const visit = async (hash = "") => {
-  await page.goto(indexPage.href([]) + hash);
+const visit = async (filter?: "active" | "completed") => {
+  await page.goto(filterPage.href(filter ? [filter] : []));
   // wait until hydrated and initial todos loaded
   await page.waitForLoadState("networkidle");
 };
@@ -334,7 +334,7 @@ describe(route, () => {
 
     test("should allow me to display active items", async () => {
       await link("Active").click();
-      await expect.poll(() => page.url()).toMatch(/#\/active$/);
+      await expect.poll(() => new URL(page.url()).pathname).toBe("/active");
       await texts(todoItems()).toEqual([ITEM_0, ITEM_2]);
     });
 
@@ -364,9 +364,15 @@ describe(route, () => {
     });
 
     test("should load the filter from the URL", async () => {
-      await visit("#/completed");
+      await visit("completed");
       await texts(todoItems()).toEqual([ITEM_1]);
       await classes(link("Completed")).toEqual(["selected"]);
+    });
+
+    test("should render 404 for an unknown filter", async () => {
+      await page.goto(filterPage.href(["unknown"]));
+      await count(page.locator(".todoapp")).toBe(0);
+      await expect.poll(() => page.locator("body").textContent()).toContain("404");
     });
 
     test("should highlight the currently applied filter", async () => {

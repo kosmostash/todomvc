@@ -1,9 +1,9 @@
 export type Override<A, B> = Omit<A, keyof B> & B;
 
 export type StaticParams = {
-  "index": [  ];
+  "{filter}": [ filter?: string | number ];
 };
 
 export type LinkProps =
-  | [ "index",  ]
+  | [ "{filter}", filter?: string | number ]
   ;
