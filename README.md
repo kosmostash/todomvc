@@ -1,4 +1,4 @@
-# TodoMVC · KosmoJS (React + Hono)
+# TodoMVC · KosmoJS (Svelte + Hono)
 
 [TodoMVC](https://github.com/tastejs/todomvc/blob/master/app-spec.md) built with
 [KosmoJS](https://kosmojs.dev). It follows the spec, except that todos are stored
@@ -6,7 +6,7 @@ on the server in SQLite (`node:sqlite`) instead of `localStorage`.
 
 ## Stack
 
-- frontend: React (`src/app/pages`, `src/app/components`)
+- frontend: Svelte (`src/app/pages`, `src/app/components`)
 - backend: Hono (`src/app/api`)
 - storage: SQLite, file location from `TODOS_DB` (default `var/todos.sqlite`)
 
@@ -19,9 +19,9 @@ on the server in SQLite (`node:sqlite`) instead of `localStorage`.
 | `/completed` | completed todos     |
 
 The filter is an optional route param (`pages/{filter}/index.tsx`); any other value renders the 404 page.
-Todos are loaded by a React Router `loader`: in production it runs during SSR, calling the API
+Todos are loaded by a page `loader` read with `useLoaderData()`: in production it runs during SSR, calling the API
 in-process, so the delivered HTML already contains the filtered list and hydration reuses that data.
-Navigating between filters runs the loader in the browser.
+Filter links are plain links, so every filter change is a server-rendered page load.
 
 ## API
 

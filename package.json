@@ -15,31 +15,27 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@hono/node-server": "^2.1.4",
     "@kosmojs/core": "link:../kosmojs/kosmo/packages/core",
-    "hono": "^4.13.13",
     "path-to-regexp": "^8.4.2",
-    "react": "^19.3.0",
-    "react-router": "^8.4.0",
+    "svelte": "^5.57.2",
+    "hono": "^4.13.13",
+    "@hono/node-server": "^2.1.4",
     "tinyglobby": "^0.2.17",
+    "typebox": "^1.3.36",
     "todomvc-app-css": "^2.4.3",
-    "todomvc-common": "^1.0.5",
-    "typebox": "^1.3.36"
+    "todomvc-common": "^1.0.5"
   },
   "devDependencies": {
     "@kosmojs/cli": "link:../kosmojs/kosmo/packages/cli",
     "@kosmojs/dev": "link:../kosmojs/kosmo/packages/dev",
     "@kosmojs/vitest": "link:../kosmojs/kosmo/packages/vitest",
-    "@types/bun": "^1.4.2",
-    "@types/deno": "^2.7.0",
     "@types/node": "^26.6.5",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "cheerio": "^1.2.0",
-    "playwright": "1.63.0",
-    "react-dom": "^19.3.0",
+    "@types/deno": "^2.7.0",
+    "@types/bun": "^1.4.2",
     "typescript": "^7.0.2",
     "vite": "^8.3.4",
-    "vitest": "^5.0.3"
+    "vitest": "^5.0.3",
+    "cheerio": "^1.2.0",
+    "playwright": "1.63.0"
   }
 }
