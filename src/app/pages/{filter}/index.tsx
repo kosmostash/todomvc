@@ -201,7 +201,7 @@ function Todos(props: { filter: Filter | undefined }) {
       <footer class="info">
         <p>Double-click to edit a todo</p>
         <p>
-          Created with <a href="https://kosmojs.dev">KosmoJS</a> (SolidJS + Hono)
+          Created with <a href="https://kosmojs.dev">KosmoJS</a> (SolidJS + Koa)
         </p>
         <p>
           Part of <a href="http://todomvc.com">TodoMVC</a>

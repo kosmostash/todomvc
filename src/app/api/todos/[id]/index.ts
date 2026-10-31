@@ -21,7 +21,7 @@ export default defineRoute<"todos/[id]", [
       ...(completed === undefined ? {} : { completed }),
     });
     if (!todo) throw new HTTPError([404, "todo not found"]);
-    return ctx.json(todo);
+    ctx.body = todo;
   }),
 
   // destroy a todo
@@ -29,6 +29,6 @@ export default defineRoute<"todos/[id]", [
     if (!deleteTodo(ctx.validated.params.id)) {
       throw new HTTPError([404, "todo not found"]);
     }
-    return ctx.body(null, 204);
+    ctx.status = 204;
   }),
 ]);

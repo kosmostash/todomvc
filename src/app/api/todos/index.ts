@@ -14,7 +14,7 @@ export default defineRoute<"todos">(({ GET, POST, PATCH, DELETE }) => [
   GET<{
     response: [200, "json", Array<Todo>];
   }>(async (ctx) => {
-    return ctx.json(listTodos());
+    ctx.body = listTodos();
   }),
 
   // create a todo
@@ -24,7 +24,8 @@ export default defineRoute<"todos">(({ GET, POST, PATCH, DELETE }) => [
   }>(async (ctx) => {
     const title = ctx.validated.json.title.trim();
     if (!title) throw new HTTPError([400, "title must not be empty"]);
-    return ctx.json(createTodo(title), 201);
+    ctx.status = 201;
+    ctx.body = createTodo(title);
   }),
 
   // mark all todos as complete / incomplete
@@ -32,13 +33,13 @@ export default defineRoute<"todos">(({ GET, POST, PATCH, DELETE }) => [
     json: { completed: boolean };
     response: [200, "json", Array<Todo>];
   }>(async (ctx) => {
-    return ctx.json(setAllCompleted(ctx.validated.json.completed));
+    ctx.body = setAllCompleted(ctx.validated.json.completed);
   }),
 
   // clear completed todos
   DELETE<{
     response: [200, "json", Array<Todo>];
   }>(async (ctx) => {
-    return ctx.json(clearCompleted());
+    ctx.body = clearCompleted();
   }),
 ]);
