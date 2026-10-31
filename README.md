@@ -43,6 +43,9 @@ pnpm test       # KosmoJS test harness: API routes + browser tests of the TodoMV
 pnpm build && pnpm preview
 ```
 
-Browser tests drive Chromium via `playwright` against the dev server the harness
-starts on a random port; they use a separate database (`var/test.sqlite`).
-The dev server always renders client-side, so use `pnpm preview` to check the server-rendered HTML.
+The frontend harness runs with `frontend.test.ssr` enabled, so it serves the production SSR build:
+
+- server-rendered HTML tests fetch each route and assert on the markup with `cheerio` (no browser)
+- browser tests drive Chromium via `playwright` against the same server
+
+Tests use a separate database (`var/test.sqlite`).

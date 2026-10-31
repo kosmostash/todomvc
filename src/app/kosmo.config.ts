@@ -7,7 +7,9 @@ export default defineConfig({
     ssr: true,
     ssg: false,
     tanstack: { query: false },
-    test: true,
+    // serve the production SSR build in the test harness,
+    // so tests can assert on server-rendered HTML
+    test: { seed: true, ssr: true },
   },
   backend: {
     stack: "hono",

@@ -1,3 +1,4 @@
+import { load } from "cheerio";
 import type { Locator, Page } from "playwright";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 
@@ -50,10 +51,120 @@ const visit = async (filter?: "active" | "completed") => {
   await page.waitForLoadState("networkidle");
 };
 
+const resetTodos = async () => {
+  await api("todos", { method: "PATCH", body: JSON.stringify({ completed: true }) });
+  await api("todos", { method: "DELETE" });
+};
+
+describe(`${route}: server-rendered HTML`, () => {
+  const render = async (filter?: string) => {
+    const response = await fetch(filterPage.href(filter ? [filter] : []));
+    return { status: response.status, $: load(await response.text()) };
+  };
+
+  const listed = ($: ReturnType<typeof load>) =>
+    $(".todo-list li")
+      .toArray()
+      .map((li) => ({
+        title: $(li).find("label").text(),
+        className: $(li).attr("class") ?? "",
+        checked: $(li).find(".toggle").is("[checked]"),
+      }));
+
+  const seed = async (todos: Array<[string, boolean]>) => {
+    for (const [title, completed] of todos) {
+      const todo: Todo = await (
+        await api("todos", { method: "POST", body: JSON.stringify({ title }) })
+      ).json();
+      if (completed) {
+        await api(`todos/${todo.id}`, {
+          method: "PATCH",
+          body: JSON.stringify({ completed }),
+        });
+      }
+    }
+  };
+
+  beforeEach(resetTodos);
+
+  test("renders only the header when there are no todos", async () => {
+    const { status, $ } = await render();
+    expect(status).toBe(200);
+    expect($(".todoapp h1").text()).toBe("todos");
+    expect($("input.new-todo").attr("placeholder")).toBe("What needs to be done?");
+    expect($(".main")).toHaveLength(0);
+    expect($(".footer")).toHaveLength(0);
+  });
+
+  describe("with todos", () => {
+    beforeEach(() => seed([[ITEM_0, false], [ITEM_1, true], [ITEM_2, false]]));
+
+    test("/ renders all todos", async () => {
+      const { $ } = await render();
+      expect(listed($)).toEqual([
+        { title: ITEM_0, className: "", checked: false },
+        { title: ITEM_1, className: "completed", checked: true },
+        { title: ITEM_2, className: "", checked: false },
+      ]);
+      expect($(".filters a.selected").text()).toBe("All");
+      expect($(".filters a.selected").attr("href")).toBe("/");
+    });
+
+    test("/active renders active todos only", async () => {
+      const { $ } = await render("active");
+      expect(listed($).map((t) => t.title)).toEqual([ITEM_0, ITEM_2]);
+      expect($(".filters a.selected").text()).toBe("Active");
+      expect($(".filters a.selected").attr("href")).toBe("/active");
+    });
+
+    test("/completed renders completed todos only", async () => {
+      const { $ } = await render("completed");
+      expect(listed($)).toEqual([{ title: ITEM_1, className: "completed", checked: true }]);
+      expect($(".filters a.selected").text()).toBe("Completed");
+      expect($(".filters a.selected").attr("href")).toBe("/completed");
+    });
+
+    test("footer reflects all todos regardless of filter", async () => {
+      for (const filter of [undefined, "active", "completed"]) {
+        const { $ } = await render(filter);
+        expect($(".todo-count").text()).toBe("2 items left");
+        expect($(".todo-count strong").text()).toBe("2");
+        expect($("button.clear-completed").text()).toBe("Clear completed");
+        expect($("#toggle-all").is("[checked]")).toBe(false);
+      }
+    });
+
+    test("toggle-all is checked when all todos are completed", async () => {
+      await api("todos", { method: "PATCH", body: JSON.stringify({ completed: true }) });
+      const { $ } = await render();
+      expect($("#toggle-all").is("[checked]")).toBe(true);
+      expect($(".todo-count").text()).toBe("0 items left");
+    });
+
+    test("clear completed is not rendered without completed todos", async () => {
+      await api("todos", { method: "PATCH", body: JSON.stringify({ completed: false }) });
+      const { $ } = await render();
+      expect($("button.clear-completed")).toHaveLength(0);
+      expect($(".todo-count").text()).toBe("3 items left");
+    });
+  });
+
+  test("singular item counter", async () => {
+    await seed([[ITEM_0, false]]);
+    const { $ } = await render();
+    expect($(".todo-count").text()).toBe("1 item left");
+  });
+
+  test("unknown filter renders the 404 page", async () => {
+    const { $ } = await render("unknown");
+    expect($(".todoapp h1").text()).toBe("404");
+    expect($(".todo-list")).toHaveLength(0);
+  });
+});
+
 describe(route, () => {
   beforeEach(async () => {
-    await api("todos", { method: "PATCH", body: JSON.stringify({ completed: true }) });
-    await api("todos", { method: "DELETE" });
+    await resetTodos();
     page = await browser.newPage();
     await visit();
   });
@@ -371,8 +482,8 @@ describe(route, () => {
 
     test("should render 404 for an unknown filter", async () => {
       await page.goto(filterPage.href(["unknown"]));
-      await count(page.locator(".todoapp")).toBe(0);
-      await expect.poll(() => page.locator("body").textContent()).toContain("404");
+      await texts(page.locator(".todoapp h1")).toEqual(["404"]);
+      await count(page.locator(".todo-list")).toBe(0);
     });
 
     test("should highlight the currently applied filter", async () => {
