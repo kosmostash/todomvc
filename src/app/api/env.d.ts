@@ -1,5 +1,5 @@
 export declare module "_/api" {
-  interface DefaultVariables {}
-  interface DefaultBindings {}
+  interface DefaultState {}
+  interface DefaultContext {}
   interface UseSlots {}
 }
