@@ -5,7 +5,7 @@ import { use } from "_/api";
  * Can be overridden on a per-route basis using the slot key.
  * */
 export default [
-  use(async function useExample(ctx, next) {
+  use(async function useExample(event, next) {
     return next();
   }),
 ];
