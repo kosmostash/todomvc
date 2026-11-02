@@ -12,7 +12,7 @@ export default defineConfig({
     test: { seed: true, ssr: true },
   },
   backend: {
-    stack: "hono",
+    stack: "koa",
     base: "/api",
     test: true,
   },
