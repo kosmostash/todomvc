@@ -1,4 +1,4 @@
-# TodoMVC · KosmoJS (Svelte + Hono)
+# TodoMVC · KosmoJS (Svelte + Koa)
 
 [TodoMVC](https://github.com/tastejs/todomvc/blob/master/app-spec.md) built with
 [KosmoJS](https://kosmojs.dev). It follows the spec, except that todos are stored
@@ -7,7 +7,7 @@ on the server in SQLite (`node:sqlite`) instead of `localStorage`.
 ## Stack
 
 - frontend: Svelte (`src/app/pages`, `src/app/components`)
-- backend: Hono (`src/app/api`)
+- backend: Koa (`src/app/api`)
 - storage: SQLite, file location from `TODOS_DB` (default `var/todos.sqlite`)
 
 ## Routes
