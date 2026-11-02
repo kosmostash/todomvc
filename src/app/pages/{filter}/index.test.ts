@@ -21,11 +21,19 @@ const api = (path: string, init?: RequestInit) =>
 
 const storedTodos = async (): Promise<Array<Todo>> => (await api("todos")).json();
 
+// whitespace-normalized text, like Playwright's toHaveText;
+// frameworks differ in the whitespace nodes they render (e.g. Svelte)
+const normalizeText = (value: string | null) => (value ?? "").replace(/\s+/g, " ").trim();
+
 // retrying assertion helpers, playwright locators are lazy
-const texts = (locator: Locator) => expect.poll(() => locator.allTextContents());
+const texts = (locator: Locator) =>
+  expect.poll(async () => (await locator.allTextContents()).map(normalizeText));
+// class lists compare by tokens; frameworks differ in whitespace (e.g. " selected")
+const normalizeClass = (value: string | undefined) =>
+  (value ?? "").split(/\s+/).filter(Boolean).join(" ");
 const classes = (locator: Locator) =>
   expect.poll(async () =>
-    (await locator.evaluateAll((els) => els.map((el) => el.className))),
+    (await locator.evaluateAll((els) => els.map((el) => el.className))).map(normalizeClass),
   );
 const count = (locator: Locator) => expect.poll(() => locator.count());
 const visible = (locator: Locator) => expect.poll(() => locator.isVisible());
@@ -41,7 +49,7 @@ const createTodos = async (items = TODO_ITEMS) => {
   for (const item of items) {
     await newTodo().fill(item);
     await newTodo().press("Enter");
-    await expect.poll(() => todoItems().last().textContent()).toBe(item);
+    await expect.poll(async () => normalizeText(await todoItems().last().textContent())).toBe(item);
   }
 };
 
@@ -66,8 +74,8 @@ describe(`${route}: server-rendered HTML`, () => {
     $(".todo-list li")
       .toArray()
       .map((li) => ({
-        title: $(li).find("label").text(),
-        className: $(li).attr("class") ?? "",
+        title: normalizeText($(li).find("label").text()),
+        className: normalizeClass($(li).attr("class")),
         checked: $(li).find(".toggle").is("[checked]"),
       }));
 
@@ -90,7 +98,7 @@ describe(`${route}: server-rendered HTML`, () => {
   test("renders only the header when there are no todos", async () => {
     const { status, $ } = await render();
     expect(status).toBe(200);
-    expect($(".todoapp h1").text()).toBe("todos");
+    expect(normalizeText($(".todoapp h1").text())).toBe("todos");
     expect($("input.new-todo").attr("placeholder")).toBe("What needs to be done?");
     expect($(".main")).toHaveLength(0);
     expect($(".footer")).toHaveLength(0);
@@ -106,30 +114,30 @@ describe(`${route}: server-rendered HTML`, () => {
         { title: ITEM_1, className: "completed", checked: true },
         { title: ITEM_2, className: "", checked: false },
       ]);
-      expect($(".filters a.selected").text()).toBe("All");
+      expect(normalizeText($(".filters a.selected").text())).toBe("All");
       expect($(".filters a.selected").attr("href")).toBe("/");
     });
 
     test("/active renders active todos only", async () => {
       const { $ } = await render("active");
       expect(listed($).map((t) => t.title)).toEqual([ITEM_0, ITEM_2]);
-      expect($(".filters a.selected").text()).toBe("Active");
+      expect(normalizeText($(".filters a.selected").text())).toBe("Active");
       expect($(".filters a.selected").attr("href")).toBe("/active");
     });
 
     test("/completed renders completed todos only", async () => {
       const { $ } = await render("completed");
       expect(listed($)).toEqual([{ title: ITEM_1, className: "completed", checked: true }]);
-      expect($(".filters a.selected").text()).toBe("Completed");
+      expect(normalizeText($(".filters a.selected").text())).toBe("Completed");
       expect($(".filters a.selected").attr("href")).toBe("/completed");
     });
 
     test("footer reflects all todos regardless of filter", async () => {
       for (const filter of [undefined, "active", "completed"]) {
         const { $ } = await render(filter);
-        expect($(".todo-count").text()).toBe("2 items left");
+        expect(normalizeText($(".todo-count").text())).toBe("2 items left");
         expect($(".todo-count strong").text()).toBe("2");
-        expect($("button.clear-completed").text()).toBe("Clear completed");
+        expect(normalizeText($("button.clear-completed").text())).toBe("Clear completed");
         expect($("#toggle-all").is("[checked]")).toBe(false);
       }
     });
@@ -138,26 +146,26 @@ describe(`${route}: server-rendered HTML`, () => {
       await api("todos", { method: "PATCH", body: JSON.stringify({ completed: true }) });
       const { $ } = await render();
       expect($("#toggle-all").is("[checked]")).toBe(true);
-      expect($(".todo-count").text()).toBe("0 items left");
+      expect(normalizeText($(".todo-count").text())).toBe("0 items left");
     });
 
     test("clear completed is not rendered without completed todos", async () => {
       await api("todos", { method: "PATCH", body: JSON.stringify({ completed: false }) });
       const { $ } = await render();
       expect($("button.clear-completed")).toHaveLength(0);
-      expect($(".todo-count").text()).toBe("3 items left");
+      expect(normalizeText($(".todo-count").text())).toBe("3 items left");
     });
   });
 
   test("singular item counter", async () => {
     await seed([[ITEM_0, false]]);
     const { $ } = await render();
-    expect($(".todo-count").text()).toBe("1 item left");
+    expect(normalizeText($(".todo-count").text())).toBe("1 item left");
   });
 
   test("unknown filter renders the 404 page", async () => {
     const { $ } = await render("unknown");
-    expect($(".todoapp h1").text()).toBe("404");
+    expect(normalizeText($(".todoapp h1").text())).toBe("404");
     expect($(".todo-list")).toHaveLength(0);
   });
 });
